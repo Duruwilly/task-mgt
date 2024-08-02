@@ -8,6 +8,17 @@
 `Storybook`
 `Styled-component` alone
 
+## Features
+
+- Create a new task
+- View all task
+- Mark task as completed
+
+## Requirements
+
+- Node.js (v14 or later)
+- yarn
+
 ## Development Setup - client
 
 1. Clone the repository.
