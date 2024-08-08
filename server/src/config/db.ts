@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-const connectionURL =
-  "mongodb+srv://admin-user:6321@task-management.m80wlb2.mongodb.net/task-management?retryWrites=true&w=majority";
+dotenv.config();
+
+const connectionURL = process.env.MONGO_URI;
 
 const connectDB = async () => {
   return mongoose.connect(connectionURL as string);
