@@ -3,6 +3,7 @@ import cors from "cors";
 import middlewareLogger from "./middleware/middleware";
 import taskRoute from "./routes/tasksRoute";
 import connectDB from "./config/db";
+import { TaskMiddleWare } from "./middleware/taskMiddleware";
 
 const app = express();
 const port = 8000;
@@ -11,6 +12,7 @@ const port = 8000;
 app.use(middlewareLogger);
 app.use(cors());
 app.use(express.json());
+app.use(TaskMiddleWare)
 
 // Route
 app.use("/api/tasks", taskRoute);
