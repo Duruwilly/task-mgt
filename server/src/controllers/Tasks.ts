@@ -24,10 +24,10 @@ export const createTask = async (req: Request, res: Response) => {
 export const updateTask = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { completed } = req.body;
+    const { completed, title } = req.body;
     const updatedTask = await Task.findByIdAndUpdate(
       id,
-      { completed },
+      { completed, title },
       { new: true }
     );
     res
@@ -37,3 +37,14 @@ export const updateTask = async (req: Request, res: Response) => {
     throw new Error(error);
   }
 };
+
+export const deleteTask = async (req: Request, res: Response) => {
+  try {
+    const {id} = req.params;
+    const deleteTask = await Task.findByIdAndDelete(id)
+    const tasks = await Task.find()
+    res.status(200).json(tasks)
+  } catch (error: any) {
+    throw new Error(error)
+  }
+}

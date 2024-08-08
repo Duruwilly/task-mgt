@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { AppDispatch, RootState } from "../../store/store";
 import {
+  deleteTask,
   fetchTasks,
   setFilter,
   updateTask,
@@ -35,9 +36,16 @@ const Header = styled.div`
   align-items: center;
 `;
 
+const EditContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 const TaskList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const [filterVal, setFilterVal] = useState<FilterState>(FilterState.All);
+  const [editTitle, setEditTitle] = useState({} as Task);
   const { tasks, loading, filter } = useSelector(
     (state: RootState) => state.tasks
   );
@@ -49,6 +57,15 @@ const TaskList: React.FC = () => {
   const handleToggleCompletion = (task: Task) => {
     dispatch(updateTask({ ...task, completed: !task.completed }));
   };
+
+  const handleEditTitle = (task: Task) => {
+    dispatch(updateTask({ ...task, title: editTitle.title }));
+    setEditTitle((state) => ({...state, _id: ""}))
+  };
+
+  const handleDeleteTask = (taskId: string) => {
+    dispatch(deleteTask(taskId))
+  }
 
   const handleSetFilter = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value as FilterState;
@@ -72,27 +89,57 @@ const TaskList: React.FC = () => {
         <h2>Tasks</h2>
         <FilterSelect filterVal={filterVal} onChange={handleSetFilter} />
       </Header>
-      {filteredTasks.map((task) => (
-        <TaskItem key={task._id}>
-          <span
-            style={{
-              textDecoration: task.completed ? "line-through" : "none",
-              color: task.completed ? "grey" : "black",
-            }}
-          >
-            {task.title}
-          </span>
-          <Button
-            disabled={task.completed}
-            onClick={() => handleToggleCompletion(task)}
-            style={{
-              textDecoration: task.completed ? "line-through" : "none",
-              background: task.completed ? "grey" : "",
-            }}
-            children="Mark complete"
-          />
-        </TaskItem>
-      ))}
+      {filteredTasks.map((task) =>
+        editTitle._id === task._id ? (
+          <EditContainer>
+            <input
+              type="text"
+              value={editTitle.title}
+              onChange={(e) =>
+                setEditTitle((state) => ({ ...state, title: e.target.value }))
+              }
+            />
+            <div>
+              <Button onClick={() => handleEditTitle(task)} children="Save" />
+              <Button
+                onClick={() => setEditTitle((state) => ({ ...state, _id: "" }))}
+                children="Cancel"
+              />
+            </div>
+          </EditContainer>
+        ) : (
+          <TaskItem key={task._id}>
+            <span
+              style={{
+                textDecoration: task.completed ? "line-through" : "none",
+                color: task.completed ? "grey" : "black",
+              }}
+            >
+              {task.title}
+            </span>
+            <div>
+              <Button
+                disabled={task.completed}
+                onClick={() => handleToggleCompletion(task)}
+                style={{
+                  textDecoration: task.completed ? "line-through" : "none",
+                  background: task.completed ? "grey" : "",
+                }}
+                children="Mark complete"
+              />
+              <Button
+                onClick={() => setEditTitle(task)}
+                children="Edit"
+              />
+              <Button
+                onClick={() => handleDeleteTask(task._id)}
+                style={{background: "red"}}
+                children="Delete"
+              />
+            </div>
+          </TaskItem>
+        )
+      )}
     </Container>
   );
 };

@@ -31,8 +31,17 @@ export const updateTask = createAsyncThunk(
   async (task: Task) => {
     const response = await api.patch(`/tasks/${task._id}`, {
       completed: task.completed,
+      title: task.title,
     });
     return response.data;
+  }
+);
+
+export const deleteTask = createAsyncThunk(
+  "task/deleteTask",
+  async (taskId: string) => {
+    const response = await api.delete(`/tasks/${taskId}`)
+    return response.data
   }
 );
 
@@ -40,10 +49,7 @@ const taskSlice = createSlice({
   name: "tasks",
   initialState,
   reducers: {
-    setFilter: (
-      state,
-      action: PayloadAction<FilterState>
-    ) => {
+    setFilter: (state, action: PayloadAction<FilterState>) => {
       state.filter = action.payload;
     },
   },
@@ -66,6 +72,8 @@ const taskSlice = createSlice({
         if (index !== -1) {
           state.tasks[index] = action.payload;
         }
+      }).addCase(deleteTask.fulfilled, (state, action: PayloadAction<Task[]>) => {
+        state.tasks = action.payload
       });
   },
 });
