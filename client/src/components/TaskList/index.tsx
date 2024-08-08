@@ -123,8 +123,10 @@ const TaskList: React.FC = () => {
                 onClick={() => handleToggleCompletion(task)}
                 style={{
                   textDecoration: task.completed ? "line-through" : "none",
-                  background: task.completed ? "grey" : "",
+                  // background: task.completed ? "grey" : "",
+
                 }}
+                variant={task.completed ? "secondary" : "primary"}
                 children="Mark complete"
               />
               <Button
@@ -133,7 +135,7 @@ const TaskList: React.FC = () => {
               />
               <Button
                 onClick={() => handleDeleteTask(task._id)}
-                style={{background: "red"}}
+                variant="danger"
                 children="Delete"
               />
             </div>
